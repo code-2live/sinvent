@@ -20,10 +20,23 @@ class BarangMasukController extends Controller
     
     public function index(Request $request)
     {
-        $rsetBarangMasuk = BarangMasuk::with('barang')->latest()->paginate(10);
+        $query = BarangMasuk::with('barang');
+    
+        if ($request->has('search')) {
+            $search = $request->input('search');
+            $query->whereHas('barang', function ($q) use ($search) {
+                $q->where('merk', 'like', '%' . $search . '%')
+                  ->orWhere('seri', 'like', '%' . $search . '%')
+                  ->orWhere('spesifikasi', 'like', '%' . $search . '%');
+            });
+        }
+    
+        $rsetBarangMasuk = $query->latest()->paginate(10);
+    
         return view('barangmasuk.index', compact('rsetBarangMasuk'))
-            ->with('i', (request()->input('page', 1) - 1) * 10);
+                ->with('i', (request()->input('page', 1) - 1) * 10);
     }
+    
     
     public function create()
     {
@@ -57,17 +70,33 @@ class BarangMasukController extends Controller
 
     public function destroy($id)
     {
+        // Cari data Barang Masuk berdasarkan ID
         $barangMasuk = BarangMasuk::findOrFail($id);
-
-        $barangKeluar = BarangKeluar::where('barang_id', $id)->first();
+    
+        // Periksa apakah ada Barang Keluar terkait
+        $barangKeluar = BarangKeluar::where('barang_id', $barangMasuk->barang_id)->first();
         if ($barangKeluar) {
             return redirect()->route('barangmasuk.index')->with(['error' => 'Data Barang Masuk tidak dapat dihapus karena terdapat Barang Keluar yang terkait.']);
         }
-
+    
+        // Periksa stok sebelum penghapusan
+        $barang = Barang::findOrFail($barangMasuk->barang_id);
+        $stokSebelum = $barang->stok;
+    
+        // Jika stok setelah penghapusan menjadi minus, batalkan penghapusan
+        if ($stokSebelum - $barangMasuk->jumlah < 0) {
+            return redirect()->route('barangmasuk.index')->with(['error' => 'Penghapusan Data Barang Masuk akan menyebabkan stok barang menjadi minus.']);
+        }
+    
+        // Lakukan penghapusan jika validasi berhasil
         $barangMasuk->delete();
-
+    
+        // Update stok barang setelah penghapusan
+        $barang->update(['stok' => $stokSebelum - $barangMasuk->jumlah]);
+    
         return redirect()->route('barangmasuk.index')->with(['success' => 'Data Berhasil Dihapus!']);
     }
+    
     
     public function edit($id)
     {

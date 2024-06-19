@@ -36,7 +36,7 @@ class BarangController extends Controller
 
         if ($request->has('search') && $rsetBarang->count() == 1) {
             $barang = $rsetBarang->first();
-            return redirect()->route('barang.show', $barang->id);
+            // return redirect()->route('barang.show', $barang->id);
         }
 
         return view('barang.index', compact('rsetBarang'))
@@ -55,7 +55,6 @@ class BarangController extends Controller
             'merk'          => 'required',
             'seri'          => 'required',
             'spesifikasi'   => 'required',
-            // 'stok'          => 'required',
             'kategori_id'   => 'required',
 
         ]);

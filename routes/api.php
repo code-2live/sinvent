@@ -17,3 +17,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+Route::get('/invent01', [KategoriController::class, 'showAPIKategori']);
+Route::post('invent02',[KategoriController::class, 'createAPIKategori']);
+Route::get('/invent03/{id}', [KategoriController::class, 'detailAPIKategori']);
+Route::delete('invent04/{kategori_id}',[KategoriController::class, 'deleteAPIKategori']);
+Route::post('invent05/{kategori_id}', [KategoriController::class, 'updateAPIKategori']);

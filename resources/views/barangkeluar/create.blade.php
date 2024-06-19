@@ -54,7 +54,7 @@
                                 <select class="form-control" name="barang_id" aria-label="Default select example">
                                     <option value="blank">Pilih Barang</option>
                                     @foreach ($abarangkeluar as $rowbarangkeluar)
-                                        <option value="{{ $rowbarangkeluar->id  }}">{{ $rowbarangkeluar->merk  }}</option>
+                                        <option value="{{ $rowbarangkeluar->id  }}">{{ $rowbarangkeluar->seri  }}</option>
                                     @endforeach
                                 </select>
                                

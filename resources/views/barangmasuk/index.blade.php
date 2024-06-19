@@ -13,6 +13,12 @@
             </div>
         @endif
 
+        <form action="{{ route('barangmasuk.index') }}" method="GET">
+                    <div class="input-group mb-3">
+                        <input type="text" name="search" class="form-control" placeholder="Search...">
+                        <button class="btn btn-outline-secondary" type="submit">Search</button>
+                    </div>
+                </form>
         <a href="{{ route('barangmasuk.create') }}" class="btn btn-md btn-success mb-3">TAMBAH BARANG MASUK</a>
 
                 <table class="table table-bordered">

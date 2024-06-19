@@ -16,47 +16,28 @@ class KategoriController extends Controller
         $this->middleware('auth');
     }
     
-    public function index()
-    {
-        
-        $rsetKategori = Kategori::select('id','deskripsi','kategori',
-             \DB::raw('(CASE
-                 WHEN kategori = "M" THEN "Modal"
-                 WHEN kategori = "A" THEN "Alat"
-                 WHEN kategori = "BHP" THEN "Bahan Habis Pakai"
-                 ELSE "Bahan Tidak Habis Pakai"
-                 END) AS ketKategori'))
-             ->paginate(10);
-        // //  OK
+    public function index(Request $request)
+{
+    $query = Kategori::select('id', 'deskripsi', 'kategori')
+                    ->addSelect(\DB::raw('(CASE
+                         WHEN kategori = "M" THEN "Modal"
+                         WHEN kategori = "A" THEN "Alat"
+                         WHEN kategori = "BHP" THEN "Bahan Habis Pakai"
+                         ELSE "Bahan Tidak Habis Pakai"
+                         END) AS ketKategori'));
 
-        // $rsetKategori = DB::select('CALL getKategoriAll()','ketKategori("M")');
-        // $rsetKategori = DB::raw("SELECT ketKategori("M") as someValue') ;
-
-        // $rsetKategori = DB::table('kategori')
-        //      ->select('id','deskripsi',DB::raw('ketKategori(kategori) as ketkategori'))
-        //      ->get();
-
-       // return $rsetKategori;
-
-
-        // $rsetKategori = DB::table('kategori')
-        //                 ->select('id','deskripsi',DB::raw('ketKategori(kategori) as ketkategori'))->paginate(1);
-
-
-
-        //  return view('kategori.index',compact('rsetKategori'));
-
-        // $rsetKategori = Kategori::all();
-        // return view('kategori.relasi', compact('rsetKategori'));
-        // $rsetKategori = Kategori::latest()->paginate(10);        
-        // return view('kategori.index',compact('rsetKategori'));
-        // $rsetKategori = Kategori::orderBy('id', 'asc')->paginate(10);
-        return view('kategori.index', compact('rsetKategori'))-> with( 'i', (request()->input('page',1)-1)*10);
-
-
-        return DB::table('kategori')->get();
-
+    if ($request->has('search')) {
+        $search = $request->input('search');
+        $query->where('deskripsi', 'like', '%' . $search . '%')
+              ->orWhere('kategori', 'like', '%' . $search . '%');
     }
+
+    $rsetKategori = $query->latest()->paginate(10);
+
+    return view('kategori.index', compact('rsetKategori'))
+            ->with('i', (request()->input('page', 1) - 1) * 10);
+}
+
 
     /**
      * Show the form for creating a new resource.

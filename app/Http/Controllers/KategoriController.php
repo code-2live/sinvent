@@ -53,32 +53,27 @@ class KategoriController extends Controller
         return view('kategori.create',compact('aKategori'));
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(Request $request)
     {
-        // return $request->all();
-
         $this->validate($request, [
-                'deskripsi' => 'required|unique:kategori,deskripsi',
-                'kategori'  => 'required|in:M,A,BHP,BTHP',
-            ]);
-
-
-        //create post
-        Kategori::create([
-            'deskripsi'  => $request->deskripsi,
-            'kategori'   => $request->kategori,
+            'deskripsi' => 'required|unique:kategori,deskripsi',
+            'kategori'  => 'required|in:M,A,BHP,BTHP',
+        ], [
+            'deskripsi.unique' => 'Deskripsi sudah ada dalam database.',
         ]);
-
-        //redirect to index
+    
+        // Create kategori
+        Kategori::create([
+            'deskripsi' => $request->deskripsi,
+            'kategori' => $request->kategori,
+        ]);
+    
+        // Redirect to index
         return redirect()->route('kategori.index')->with(['success' => 'Data Berhasil Disimpan!']);
     }
+    
 
-    /**
-     * Display the specified resource.
-     */
     public function show(string $id)
     {
         $rsetKategori = Kategori::find($id);

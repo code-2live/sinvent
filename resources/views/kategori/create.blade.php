@@ -11,7 +11,11 @@
                                 {{ session('success') }}
                             </div>
                         @endif
-
+                        @if($errors->has('deskripsi'))
+                            <div class="alert alert-danger" role="alert">
+                                {{ $errors->first('deskripsi') }}
+                            </div>
+                        @endif
                         <form method="POST" action="{{ route('kategori.store') }}">
                             @csrf
 

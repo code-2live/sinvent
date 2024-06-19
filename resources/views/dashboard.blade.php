@@ -3,7 +3,7 @@
 @section('content')
     <section class="hero py-5">
         <div class="container text-center">
-            <h1 class="font-weight-bold">SISITEM INFORMASI BARANG</h1>
+            <h1 class="font-weight-bold">SISTEM INFORMASI BARANG</h1>
             <p>Selamat Datang di Sistem Inventory Silahkan Pilih Menu Dibawah!</p>
             <!-- <a href="#features" class="btn btn-primary">Learn More</a> -->
         </div>
